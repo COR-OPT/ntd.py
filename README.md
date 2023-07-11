@@ -1,6 +1,6 @@
 # Normal-Tangent-Descent
 
-Pytorch implementation of Normal-Tangent-Descent experiments from preprint [[1]](#1). 
+Pytorch implementation of Normal-Tangent-Descent experiments from preprint [[1]](#1).
 
 **Experiments Notebook:** [examples/NTD_paper_experiments.ipynb](GNP_paper_experiments.ipynb)
 ## Example installation using `pip`
