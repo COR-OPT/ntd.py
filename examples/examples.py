@@ -157,7 +157,7 @@ def max_of_smooth_random(nb_functions=10, dimension=50, init_scale= 1., seed=340
             # assert len(x) == dimension
             term1 = g @ x
             # term2 = 0.5 * stack([torch.square(x.T @ tmp[i, :]) for i in range(nb_functions)])
-            term2 = 0.5 * stack([x.T @ H[i, :, :] @ x for i in range(nb_functions)])
+            term2 = 0.5 * stack([x @ (H[i, :, :] @ x) for i in range(nb_functions)])
             term3 = 0#(1. / 24.) * (norm(x) ** 4) * c
             return max(term1 + term2 + term3)
         else:
