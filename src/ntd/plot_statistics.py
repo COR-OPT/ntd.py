@@ -35,13 +35,21 @@ def plot(statistics_list):
     labels = []
     stationary_labels = []
     colors = {}
-    colors_list = sns.color_palette("colorblind", 3) # at most three different experiments. Can modify if needed.
+    # if there is only one method, then we need len(statistics_list) colors
+    ## otherwise we only need 3.
+    if len(name_of_methods) == 1:
+        colors_list = sns.color_palette("colorblind", len(statistics_list))
+    else:
+        colors_list = sns.color_palette("colorblind", 3) # at most three different experiments. Can modify if needed.
 
 
     for name_of_method in name_of_methods:
         # if name_of_method contains 'NTD', then use a solid line
         if 'NTD' in name_of_method:
-            dashes_dict[name_of_method] = (None, None)
+            if 'trust' in name_of_method:
+                dashes_dict[name_of_method] = (2, 2)
+            else:
+                dashes_dict[name_of_method] = (None, None)
         else:
             dashes_dict[name_of_method] = line_dash_types.pop(0)
 

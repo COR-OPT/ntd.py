@@ -24,6 +24,8 @@ class NTD(Optimizer):
                  params,
                  opt_f=np.inf,
                  adaptive_grid_size = False,
+                 use_trust_region = True,
+                 s_scale_factor = 1e-6,
                  verbose=False):
 
         defaults = dict(lr=1)
@@ -33,6 +35,9 @@ class NTD(Optimizer):
         self.verbose = verbose
         self.num_oracle_iter = 0
         self.sigma_increase = adaptive_grid_size
+        self.use_trust_region = use_trust_region
+        self.s = None
+        self.s_scale_factor = s_scale_factor
 
         self.nb_increasing_steps = np.inf
         if len(self.param_groups) != 1:
@@ -150,7 +155,8 @@ class NTD(Optimizer):
         best_sigma = 0
         v = g
         num_oracle = 0
-        s = np.sqrt(float(g.dot(g)))
+        s = max(np.sqrt(float(g.dot(g))), self.s * self.s_scale_factor)
+
         best_idx_so_far = 0
         if self.opt_f == np.inf:
             dist_est = 1
@@ -170,7 +176,11 @@ class NTD(Optimizer):
         nb_increasing_steps = 0
         min_sub_norm = np.sqrt(float(g.dot(g)))
         i = 0
-        while sigma_multiplier * min_sub_norm/s >= sigma and i < G:
+        # if self.use_trust region is True, then ((sigma_multiplier * min_sub_norm/s >= sigma) or not self.use_trust_region)
+        ## will be true if one of them is true, only when the trust region is not violated.
+        # if self.use_trust region is False, then ((sigma_multiplier * min_sub_norm/s >= sigma) or not self.use_trust_region)
+        ## will be true even if the trust region is violated.
+        while i < G and ((sigma_multiplier * min_sub_norm/s >= sigma) or not self.use_trust_region):
             i = i+1
             sigma = dist_est * sigma_multiplier * np.power(2.0, -float((G - i)))
             u, no1, min_sub_norm = self._NDescent(obj_func, x, v, loss, sigma, T)
@@ -280,6 +290,8 @@ class NTD(Optimizer):
         # Get the current gradient and loss
         loss, d = obj_func(x, 0, flat_grad)
         # Run line_search routine.
+        if K == 0:
+            self.s = d.norm().numpy()
         a, sigma, num_oracle, R_k = self._linesearch(obj_func, x, d, loss, G, T)
         self.sigma = sigma
         # Calculate the norm of a

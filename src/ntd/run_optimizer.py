@@ -124,7 +124,11 @@ def run(optimizer=None,
 
     # Get the name of the optimizer
     if name_of_method == 'NTD':
-        name_of_method = r"$\mathtt{NTDescent}$"
+        # if optimizer.use_trust_region is true then
+        if optimizer.use_trust_region is True:
+            name_of_method = r"$\mathtt{NTDescent}$"
+        else:
+            name_of_method = r"$\mathtt{NTDescent}$ (no trust region)"
     elif name_of_method == 'Polyak':
         name_of_method = r"$\mathtt{PolyakSGM}$"
     statistics['name_of_method'] = name_of_method
