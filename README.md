@@ -2,7 +2,7 @@
 
 Pytorch implementation of Normal-Tangent-Descent experiments from preprint [[1]](#1).
 
-**Experiments Notebook:** [examples/NTD_paper_experiments.ipynb](GNP_paper_experiments.ipynb)
+**Experiments Notebook:** [NTD_paper_experiments.ipynb](examples/NTD_paper_experiments.ipynb)
 ## Example installation using `pip`
 ```shell
 $ git clone https://github.com/COR-OPT/ntd.py.git
